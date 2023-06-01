@@ -88,16 +88,16 @@ const Modals = ({ ...props }) => {
           <ModalHeader></ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Flex direction={'column'}>
-              <Flex justifyContent={'space-between'} >
+            <VStack direction={'column'}>
+              <HStack justifyContent={'space-between'} >
                 <Input mr={'5'} size={'md'} onChange={(v) => setNewGroup(v.target.value)} value={newGroup} />
                 <label fontSize='xs'>نام گروه پیامکی</label>
-              </Flex>
-              <Flex justifyContent={'space-between'} my={'30px'}>
+              </HStack>
+              <HStack justifyContent={'space-between'} my={'30px'}>
                 <Button onClick={handleSetGroup} fontSize='xs' backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }}>ثبت</Button>
                 <Button onClick={props.onOpenMessageSelect} fontSize='xs' backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }}>انتخاب پیامک ها</Button>
-              </Flex>
-            </Flex>
+              </HStack>
+            </VStack>
           </ModalBody>
           <ModalFooter>
             <Button onClick={onOpenGroupAttacking} backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }}></Button>
@@ -111,8 +111,8 @@ const Modals = ({ ...props }) => {
           <ModalHeader ><Center ></Center></ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Flex justifyContent={'center'} alignItems={'center'} height={'container.md'} flexDirection={'column'}>
-              <Card>
+            <HStack justifyContent={'center'} >
+              <Card width={'calc(100% - 80px)'}>
                 <CardHeader backgroundColor={'#4662b2'} color={'white'} textAlign={'center'} borderRadius={'5px'}>
                   <Text>انتخاب پیامک ها</Text>
                 </CardHeader>
@@ -142,7 +142,7 @@ const Modals = ({ ...props }) => {
                   <Button mt={'2'} fontSize='xs' backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }}>ثبت</Button>
                 </CardBody>
               </Card>
-            </Flex>
+            </HStack>
           </ModalBody>
           <ModalFooter>
             <Button onClick={props.onCloseMessageSelect} fontSize='xs' backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }}>بستن</Button>
@@ -156,8 +156,8 @@ const Modals = ({ ...props }) => {
         <ModalContent>
           <ModalCloseButton />
           <ModalBody>
-            <VStack justifyContent={'center'} alignItems={'center'} mt={'50px'} >
-              <Card>
+            <VStack justifyContent={'center'} mt={'50px'} >
+              <Card width={'calc(100% - 80px)'}>
                 <CardHeader backgroundColor={'#4662b2'} color={'white'} textAlign={'center'} borderRadius={'5px'}>
                   <Text>انتخاب پیامک ها</Text>
                 </CardHeader>
@@ -211,15 +211,15 @@ const Modals = ({ ...props }) => {
           <ModalHeader>Modal Title</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Flex direction={'column'}>
-              <Flex justifyContent={'space-between'} >
+            <VStack direction={'column'}>
+              <HStack justifyContent={'space-between'} >
                 <Input mr={'5'} size={'md'} />
                 <label fontSize='xs'>پیامک مناسب</label>
-              </Flex>
-              <Flex justifyContent={'space-between'} my={'30px'}>
+              </HStack>
+              <HStack justifyContent={'space-between'} my={'30px'}>
                 <Button fontSize='xs' backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }}>ثبت</Button>
-              </Flex>
-            </Flex>
+              </HStack>
+            </VStack>
           </ModalBody>
           <ModalFooter>
           </ModalFooter>
@@ -235,19 +235,19 @@ const Modals = ({ ...props }) => {
           <ModalHeader ></ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Flex justifyContent={'center'} alignItems={'center'} height={'container.md'} flexDirection={'column'}>
-              <Flex float={'left'} width={'max'}>
+            <VStack justifyContent={'center'}>
+              <HStack float={'left'} width={'max'}>
                 <Button mb={'5'} onClick={onOpenGroupAttacked} fontSize='xs' backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }}>ایجاد گروه عملیات شده</Button>
-              </Flex>
-              <Card>
+              </HStack>
+              <Card width={'calc(100% - 80px)'}>
                 <CardHeader backgroundColor={'#4662b2'} color={'white'} textAlign={'center'} borderRadius={'5px'}>
                   <Text>گروه عملیات شده</Text>
                 </CardHeader>
                 <CardBody>
-                  <Flex>
+                  <HStack>
                     <IconButton icon={<SiAddthis />} color='gray.600' variant='soft' onClick={handleSetSelectMessage} />
                     <Input w={'container.sm'} value={selectMessage} onChange={(e) => setSelectMessage(e.target.value)} />
-                  </Flex>
+                  </HStack>
                   <TableContainer sx={{ direction: 'rtl' }}>
                     <Table variant='simple' size='lg' >
                       <Thead>
@@ -279,7 +279,7 @@ const Modals = ({ ...props }) => {
                   </TableContainer>
                 </CardBody>
               </Card>
-            </Flex>
+            </VStack>
           </ModalBody>
           <ModalFooter>
             <Button onClick={onCloseAttacked} fontSize='xs' backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }}>بستن</Button>
@@ -293,16 +293,16 @@ const Modals = ({ ...props }) => {
           <ModalHeader>Modal Title</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Flex direction={'column'}>
-              <Flex justifyContent={'space-between'} >
+            <VStack direction={'column'}>
+              <HStack justifyContent={'space-between'} >
                 <Input mr={'5'} size={'md'} onChange={(v) => setNewGroup(v.target.value)} value={newGroup} />
                 <label fontSize='xs'>نام گروه عملیات شده</label>
-              </Flex>
-              <Flex justifyContent={'space-between'} my={'30px'}>
+              </HStack>
+              <HStack justifyContent={'space-between'} my={'30px'}>
                 <Button onClick={handleSetGroup} fontSize='xs' backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }}>ثبت</Button>
                 <Button onClick={handleSetGroup} fontSize='xs' backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }}>اسامی گروه عملیات شده</Button>
-              </Flex>
-            </Flex>
+              </HStack>
+            </VStack>
           </ModalBody>
           <ModalFooter>
           </ModalFooter>
@@ -316,8 +316,8 @@ const Modals = ({ ...props }) => {
           <ModalHeader ></ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Flex justifyContent={'center'} alignItems={'center'} height={'container.md'} flexDirection={'column'}>
-              <Card>
+            <HStack justifyContent={'center'}>
+              <Card width={'calc(100% - 80px)'}>
                 <CardHeader backgroundColor={'#4662b2'} color={'white'} textAlign={'center'} borderRadius={'5px'}>
                   <Text>اسامی گروه عملیات شده</Text>
                 </CardHeader>
@@ -347,7 +347,7 @@ const Modals = ({ ...props }) => {
                   <Button mt={'2'} fontSize='xs' backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }}>ثبت</Button>
                 </CardBody>
               </Card>
-            </Flex>
+            </HStack>
           </ModalBody>
           <ModalFooter>
             <Button onClick={onCloseListAttacked} fontSize='xs' backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }}>بستن</Button>
@@ -362,19 +362,19 @@ const Modals = ({ ...props }) => {
           <ModalHeader ></ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Flex justifyContent={'center'} alignItems={'center'} height={'container.md'} flexDirection={'column'}>
-              <Flex float={'left'} width={'max'}>
+            <VStack justifyContent={'center'}>
+              <HStack float={'left'} width={'max'}>
                 <Button mb={'5'} onClick={onOpenAddGroupAttacked} fontSize='xs' backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }}>ایجاد گروه عملیات شده</Button>
-              </Flex>
-              <Card>
+              </HStack>
+              <Card width={'calc(100% - 80px)'}>
                 <CardHeader backgroundColor={'#4662b2'} color={'white'} textAlign={'center'} borderRadius={'5px'}>
                   <Text>لیست گروه کاری عملیات شده</Text>
                 </CardHeader>
                 <CardBody>
-                  <Flex>
+                  <HStack>
                     <IconButton icon={<SiAddthis />} color='gray.600' variant='soft' onClick={handleSetSelectMessage} />
                     <Input w={'container.sm'} value={selectMessage} onChange={(e) => setSelectMessage(e.target.value)} />
-                  </Flex>
+                  </HStack>
                   <TableContainer sx={{ direction: 'rtl' }}>
                     <Table variant='simple' size='lg' >
                       <Thead>
@@ -405,7 +405,7 @@ const Modals = ({ ...props }) => {
                   <Button mt={'2'} backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }}>ثبت</Button>
                 </CardBody>
               </Card>
-            </Flex>
+            </VStack>
           </ModalBody>
           <ModalFooter>
             <Button onClick={onCloseWorkGrouopAttacked} backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }}>بستن</Button>
@@ -420,15 +420,15 @@ const Modals = ({ ...props }) => {
           <ModalHeader>Modal Title</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Flex direction={'column'}>
-              <Flex justifyContent={'space-between'} >
+            <VStack direction={'column'}>
+              <HStack justifyContent={'space-between'} >
                 <Input mr={'5'} size={'md'} onChange={(v) => setNewGroup(v.target.value)} value={newGroup} />
                 <label >نام گروه عملیات شده</label>
-              </Flex>
-              <Flex justifyContent={'space-between'} my={'30px'}>
+              </HStack>
+              <HStack justifyContent={'space-between'} my={'30px'}>
                 <Button onClick={handleSetGroup} backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }}>ثبت</Button>
-              </Flex>
-            </Flex>
+              </HStack>
+            </VStack>
           </ModalBody>
           <ModalFooter>
           </ModalFooter>
@@ -445,11 +445,11 @@ const Modals = ({ ...props }) => {
           <ModalHeader ></ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <VStack justifyContent={'center'} alignItems={'center'} >
+            <VStack justifyContent={'center'} >
               <HStack textAlign={'end'} width={'100%'}>
                 <Button mb={'5'} onClick={onOpenAddGroupAttacking} backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }} rightIcon={<IoAdd fontSize='25px' />} fontSize={'sm'}>ایجاد گروه عملیات کننده</Button>
               </HStack>
-              <Card>
+              <Card width={'calc(100% - 80px)'}>
                 <CardHeader backgroundColor={'#4662b2'} color={'white'} textAlign={'center'} borderRadius={'5px'}>
                   <Text>گروه عملیات کننده</Text>
                 </CardHeader>
@@ -503,16 +503,16 @@ const Modals = ({ ...props }) => {
           <ModalHeader></ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Flex direction={'column'}>
-              <Flex justifyContent={'space-between'} >
+            <VStack direction={'column'}>
+              <HStack justifyContent={'space-between'} >
                 <Input mr={'5'} size={'md'} onChange={(v) => setNewGroup(v.target.value)} value={newGroup} />
                 <label style={{fontSize:'12px'}}>نام گروه عملیات کننده</label>
-              </Flex>
-              <Flex justifyContent={'space-between'} my={'30px'}>
+              </HStack>
+              <HStack justifyContent={'space-between'} my={'30px'}>
                 <Button onClick={handleSetGroup} backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }} fontSize={'sm'}>ثبت</Button>
                 <Button onClick={onOpenNumber} backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }} fontSize={'sm'}>شماره سیم کارت گروه عملیات کننده</Button>
-              </Flex>
-            </Flex>
+              </HStack>
+            </VStack>
           </ModalBody>
           <ModalFooter>
           </ModalFooter>
@@ -530,7 +530,7 @@ const Modals = ({ ...props }) => {
               <HStack float={'left'} width={'max'}>
                 <Button mb={'5'} onClick={onOpenAddNumber} backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }}>اضافه کردن سیم کارت</Button>
               </HStack>
-              <Card>
+              <Card width={'calc(100% - 80px)'}>
                 <CardHeader backgroundColor={'#4662b2'} color={'white'} textAlign={'center'} borderRadius={'5px'}>
                   <Text>لیست شماره سیم کارت ها</Text>
                 </CardHeader>
@@ -579,7 +579,7 @@ const Modals = ({ ...props }) => {
           <ModalCloseButton />
           <ModalBody>
             <HStack justifyContent={'center'}>
-              <Card>
+              <Card width={'calc(100% - 80px)'}>
                 <CardHeader backgroundColor={'#4662b2'} color={'white'} textAlign={'center'} borderRadius={'5px'}>
                   <Text>گروه پیامکی</Text>
                 </CardHeader>
@@ -614,7 +614,7 @@ const Modals = ({ ...props }) => {
                   </HStack>
                 </CardBody>
               </Card>
-              <Card>
+              <Card width={'calc(100% - 80px)'}>
               <CardHeader backgroundColor={'#4662b2'} color={'white'} textAlign={'center'} borderRadius={'5px'}>
                   <Text>گروه پیامکی</Text>
                 </CardHeader>

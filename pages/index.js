@@ -76,13 +76,13 @@ export default function Home() {
 
       <Nav>
         <VStack justifyContent={'center'} mt={'30px'} alignItems={'center'}>
-          <HStack alignItems={'end'} width={'100%'} ml={6}>
+          <HStack alignItems={'end'} width={'100%'} ml={20}>
             <Button onClick={onOpen} backgroundColor={'#4662b2'} color={'white'} rightIcon={<IoAdd fontSize='25px' />} _hover={{ backgroundColor: '#556eb8' }}>
               <Text fontSize='xs'>ایجاد گروه پیامکی</Text>
             </Button>
             <Button onClick={onOpenMessageSelect2} backgroundColor={'#4662b2'} color={'white'} rightIcon={<IoAdd fontSize='25px' />} fontSize='xs' _hover={{ backgroundColor: '#556eb8' }}>اضافه کردن پیامک</Button>
           </HStack>
-          <Card>
+          <Card width={'calc(100% - 80px)'}>
             <CardHeader backgroundColor={'#4662b2'} color={'white'} textAlign={'center'} borderRadius={'5px'}>
               <Text>گروه پیامکی</Text>
             </CardHeader>
@@ -92,8 +92,8 @@ export default function Home() {
                   <Thead>
                     <Tr>
                       <Th></Th>
-                      <Th fontSize='xs'>نام گروه پیامکی</Th>
-                      <Th fontSize='xs'>ردیف</Th>
+                      <Th fontSize='xs' boxSize={2} width={'473px'} textAlign={'right'}>نام گروه پیامکی</Th>
+                      <Th fontSize='xs' boxSize={2}>ردیف</Th>
                     </Tr>
                   </Thead>
                   <Tbody>
@@ -112,7 +112,7 @@ export default function Home() {
                             </MenuList>
                           </Menu></Td>
                           <Td textAlign={'right'}>{editIndex === index ? <Input onKeyDown={(e) => handleNewData(e, index , editText)} value={editText} onChange={(e) => setEditText(e.target.value)} /> : item}</Td>
-                          <Td>{index + 1}</Td>
+                          <Td textAlign={'right'}>{index + 1}</Td>
                         </Tr>
                       ))
                     }
