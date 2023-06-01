@@ -83,17 +83,20 @@ const Modals = ({ ...props }) => {
   return (
     <>
       <Modal isOpen={props.isOpen} onClose={props.onClose} size={'xl'}>
-        <ModalOverlay />
+      <ModalOverlay
+      bg='blackAlpha.100'
+      backdropFilter='blur(5px)'
+    />
         <ModalContent>
           <ModalHeader></ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <VStack direction={'column'}>
-              <HStack justifyContent={'space-between'} >
+              <HStack justifyContent={'space-between'} mb={'30px'}>
                 <Input mr={'5'} size={'md'} onChange={(v) => setNewGroup(v.target.value)} value={newGroup} />
-                <label fontSize='xs'>نام گروه پیامکی</label>
+                <label fontSize='xs' style={{width:'150px' , textAlign:'right'}}>نام گروه پیامکی</label>
               </HStack>
-              <HStack justifyContent={'space-between'} my={'30px'}>
+              <HStack justifyContent={'space-between'} my={'30px'} w={'80%'}>
                 <Button onClick={handleSetGroup} fontSize='xs' backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }}>ثبت</Button>
                 <Button onClick={props.onOpenMessageSelect} fontSize='xs' backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }}>انتخاب پیامک ها</Button>
               </HStack>
@@ -106,7 +109,10 @@ const Modals = ({ ...props }) => {
       </Modal>
 
       <Modal onClose={props.onCloseMessageSelect} size={'full'} isOpen={props.isOpenMessageSelect}  >
-        <ModalOverlay />
+      <ModalOverlay
+      bg='blackAlpha.100'
+      backdropFilter='blur(5px)'
+    />
         <ModalContent>
           <ModalHeader ><Center ></Center></ModalHeader>
           <ModalCloseButton />
@@ -121,8 +127,8 @@ const Modals = ({ ...props }) => {
                     <Table variant='simple' size='lg' >
                       <Thead>
                         <Tr>
-                          <Th><Text fontSize='xs'>ردیف</Text></Th>
-                          <Th fontSize='xs'>پیامک</Th>
+                          <Th fontSize='xs' boxSize={2}>ردیف</Th>
+                          <Th fontSize='xs' w={'100%'}>پیامک</Th>
                           <Th fontSize='xs'>انتخاب</Th>
                         </Tr>
                       </Thead>
@@ -162,7 +168,7 @@ const Modals = ({ ...props }) => {
                   <Text>انتخاب پیامک ها</Text>
                 </CardHeader>
                 <CardBody>
-                  <HStack>
+                  <HStack justifyContent={'right'}>
                     <IconButton icon={<SiAddthis />} color='gray.600' variant='soft' onClick={handleSetSelectMessage} />
                     <Input w={'container.sm'} value={selectMessage} onChange={(e) => setSelectMessage(e.target.value)} />
                   </HStack>
@@ -170,9 +176,10 @@ const Modals = ({ ...props }) => {
                     <Table variant='simple' size='lg' >
                       <Thead>
                         <Tr>
-                          <Th><Text fontSize='xs'>ردیف</Text></Th>
+                          <Th><Text fontSize='xs' boxSize={2}>ردیف</Text></Th>
                           <Th fontSize='xs'>پیامک</Th>
                           <Th fontSize='xs'>مناسب جهت</Th>
+                          <Th fontSize='xs'></Th>
                         </Tr>
                       </Thead>
                       <Tbody>
@@ -182,10 +189,13 @@ const Modals = ({ ...props }) => {
                               <Td>{index + 1}</Td>
                               <Td>{item}</Td>
                               <Td>
-                                <FormControl onClick={onOpen}>
+                                <FormControl >
                                   <Select >
                                   </Select>
                                 </FormControl>
+                              </Td>
+                              <Td>
+                              <IconButton icon={<SiAddthis />} color='gray.600' variant='soft' onClick={onOpen} />
                               </Td>
                             </Tr>
                           ))
@@ -206,17 +216,20 @@ const Modals = ({ ...props }) => {
 
 
       <Modal isOpen={isOpen} onClose={onClose} size={'xl'}>
-        <ModalOverlay />
+      <ModalOverlay
+      bg='blackAlpha.100'
+      backdropFilter='blur(5px)'
+    />
         <ModalContent>
-          <ModalHeader>Modal Title</ModalHeader>
+          <ModalHeader></ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <VStack direction={'column'}>
               <HStack justifyContent={'space-between'} >
                 <Input mr={'5'} size={'md'} />
-                <label fontSize='xs'>پیامک مناسب</label>
+                <label fontSize='xs' style={{width:'150px' , textAlign:'right '}} >پیامک مناسب</label>
               </HStack>
-              <HStack justifyContent={'space-between'} my={'30px'}>
+              <HStack justifyContent={'space-between'} my={'30px'} w='100%'>
                 <Button fontSize='xs' backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }}>ثبت</Button>
               </HStack>
             </VStack>
@@ -288,7 +301,10 @@ const Modals = ({ ...props }) => {
       </Modal>
 
       <Modal isOpen={isOpenGroupAttacked} onClose={onCloseGroupAttacked} size={'xl'}>
-        <ModalOverlay />
+      <ModalOverlay
+      bg='blackAlpha.100'
+      backdropFilter='blur(5px)'
+    />
         <ModalContent>
           <ModalHeader>Modal Title</ModalHeader>
           <ModalCloseButton />
@@ -415,7 +431,10 @@ const Modals = ({ ...props }) => {
 
 
       <Modal isOpen={isOpenAddGroupAttacked} onClose={onCloseAddGroupAttacked} size={'xl'}>
-        <ModalOverlay />
+      <ModalOverlay
+      bg='blackAlpha.100'
+      backdropFilter='blur(5px)'
+    />
         <ModalContent>
           <ModalHeader>Modal Title</ModalHeader>
           <ModalCloseButton />
@@ -446,7 +465,7 @@ const Modals = ({ ...props }) => {
           <ModalCloseButton />
           <ModalBody>
             <VStack justifyContent={'center'} >
-              <HStack textAlign={'end'} width={'100%'}>
+              <HStack textAlign={'end'} width={'100%'} ml={24}>
                 <Button mb={'5'} onClick={onOpenAddGroupAttacking} backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }} rightIcon={<IoAdd fontSize='25px' />} fontSize={'sm'}>ایجاد گروه عملیات کننده</Button>
               </HStack>
               <Card width={'calc(100% - 80px)'}>
@@ -458,8 +477,8 @@ const Modals = ({ ...props }) => {
                     <Table variant='simple' size='lg' >
                       <Thead>
                         <Tr>
-                          <Th><Text>ردیف</Text></Th>
-                          <Th>نام گروه کاری عملیات کننده</Th>
+                          <Th boxSize={2}><Text>ردیف</Text></Th>
+                          <Th width={'100%'}>نام گروه کاری عملیات کننده</Th>
                           <Th></Th>
                         </Tr>
                       </Thead>
@@ -498,17 +517,20 @@ const Modals = ({ ...props }) => {
 
 
       <Modal isOpen={isOpenAddGroupAttacking} onClose={onCloseAddGroupAttacking} size={'xl'}>
-        <ModalOverlay />
+      <ModalOverlay
+      bg='blackAlpha.100'
+      backdropFilter='blur(5px)'
+    />
         <ModalContent>
           <ModalHeader></ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <VStack direction={'column'}>
-              <HStack justifyContent={'space-between'} >
+              <HStack justifyContent={'space-between'} mb={6}>
                 <Input mr={'5'} size={'md'} onChange={(v) => setNewGroup(v.target.value)} value={newGroup} />
-                <label style={{fontSize:'12px'}}>نام گروه عملیات کننده</label>
+                <label style={{fontSize:'12px' , width:'180px' , textAlign:'right'}}>نام گروه عملیات کننده</label>
               </HStack>
-              <HStack justifyContent={'space-between'} my={'30px'}>
+              <HStack justifyContent={'space-between'} my={'30px'} w={'85%'}>
                 <Button onClick={handleSetGroup} backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }} fontSize={'sm'}>ثبت</Button>
                 <Button onClick={onOpenNumber} backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }} fontSize={'sm'}>شماره سیم کارت گروه عملیات کننده</Button>
               </HStack>
@@ -523,12 +545,12 @@ const Modals = ({ ...props }) => {
       <Modal onClose={onCloseNumber} size={'full'} isOpen={isOpenNumber}  >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader ><Center>لیست شماره سیم کارت ها</Center></ModalHeader>
+          <ModalHeader ></ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <VStack justifyContent={'center'} >
-              <HStack float={'left'} width={'max'}>
-                <Button mb={'5'} onClick={onOpenAddNumber} backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }}>اضافه کردن سیم کارت</Button>
+              <HStack float={'left'} width={'max'} w={'94%'}>
+                <Button mb={'5'} onClick={onOpenAddNumber} backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }} rightIcon={<IoAdd fontSize='25px' />}>اضافه کردن سیم کارت</Button>
               </HStack>
               <Card width={'calc(100% - 80px)'}>
                 <CardHeader backgroundColor={'#4662b2'} color={'white'} textAlign={'center'} borderRadius={'5px'}>
@@ -539,9 +561,9 @@ const Modals = ({ ...props }) => {
                     <Table variant='simple' size='lg' >
                       <Thead>
                         <Tr>
-                          <Th><Text>ردیف</Text></Th>
-                          <Th>شماره سیم کارت</Th>
-                          <Th>انتخاب</Th>
+                          <Th fontSize={'xs'} boxSize={2}>ردیف</Th>
+                          <Th fontSize={'xs'} w={'100%'}>شماره سیم کارت</Th>
+                          <Th fontSize={'xs'}>انتخاب</Th>
                         </Tr>
                       </Thead>
                       <Tbody>
@@ -586,7 +608,7 @@ const Modals = ({ ...props }) => {
                 <CardBody>
                   <HStack justifyContent={'space-between'} mb={5}>
                     <Input mr={'5'} size={'md'} onChange={(v) => setNewGroup(v.target.value)} value={newGroup} />
-                    <label style={{ width: '65%', textAlign: 'right' }}>شماره</label>
+                    <label style={{ width: '100px', textAlign: 'right' }}>شماره</label>
                   </HStack>
                   <HStack justifyContent={'space-between'} mb={5}>
                     <IconButton icon={<SiAddthis />} color='gray.600' variant='soft' onClick={handleSetSelectMessage} />
@@ -594,7 +616,7 @@ const Modals = ({ ...props }) => {
                       <Select >
                       </Select>
                     </FormControl>
-                    <label style={{ width: '100%', textAlign: 'right' }}>نام اپراتور</label>
+                    <label style={{ width:'calc(100px + 35px)', textAlign: 'right' }}>نام اپراتور</label>
                   </HStack>
                   <HStack justifyContent={'space-between'} mb={5}>
                     <IconButton icon={<SiAddthis />} color='gray.600' variant='soft' onClick={handleSetSelectMessage} />
@@ -602,7 +624,7 @@ const Modals = ({ ...props }) => {
                       <Select >
                       </Select>
                     </FormControl>
-                    <label style={{ width: '100%', textAlign: 'right' }}>مالکیت</label>
+                    <label style={{ width: 'calc(100px + 35px)', textAlign: 'right' }}>مالکیت</label>
                   </HStack >
                   <HStack justifyContent={'space-between'} mb={5}>
                     <IconButton icon={<SiAddthis />} color='gray.600' variant='soft' onClick={handleSetSelectMessage} />
@@ -610,7 +632,7 @@ const Modals = ({ ...props }) => {
                       <Select >
                       </Select>
                     </FormControl>
-                    <label style={{ width: '100%', textAlign: 'right' }}>محل فعالیت</label>
+                    <label style={{ width: 'calc(100px + 35px)', textAlign: 'right' }}>محل فعالیت</label>
                   </HStack>
                 </CardBody>
               </Card>
@@ -623,9 +645,9 @@ const Modals = ({ ...props }) => {
                     <Table variant='simple' size='lg' >
                       <Thead>
                         <Tr>
-                          <Th><Text>ردیف</Text></Th>
-                          <Th>شماره سیم کارت</Th>
-                          <Th>انتخاب</Th>
+                          <Th fontSize={'xs'} boxSize={2}>ردیف</Th>
+                          <Th fontSize={'xs'} w={'100%'}>شماره سیم کارت</Th>
+                          <Th fontSize={'xs'}>انتخاب</Th>
                         </Tr>
                       </Thead>
                       <Tbody>
