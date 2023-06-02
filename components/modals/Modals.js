@@ -20,7 +20,7 @@ import {
   MenuDivider,
   HStack,
   VStack,
-  CardHeader,
+  CardHeader,CardFooter
 } from '@chakra-ui/react'
 
 import { SiAddthis } from "react-icons/si";
@@ -32,6 +32,10 @@ import _ from 'lodash'
 import { FaEllipsisV } from "react-icons/fa";
 
 import { IoAdd } from 'react-icons/io5'
+
+import axios from 'axios';
+
+import ResponsivePagination  from 'react-responsive-pagination'
 
 
 const Modals = ({ ...props }) => {
@@ -47,18 +51,34 @@ const Modals = ({ ...props }) => {
   const { isOpen: isOpenAddNumber, onOpen: onOpenAddNumber, onClose: onCloseAddNumber } = useDisclosure()
 
   const [newGroup, setNewGroup] = useState('')
-
-  const [messageChecked, setMessageChecked] = useState({})
-
   const [selectMessage, setSelectMessage] = useState('')
+
+  const [messageChecked, setMessageChecked] = useState([])
+
   const [dataSelectMessage, setDataSelectMessage] = useState([])
 
+  const [allMessage , setAllMessages] = useState([])
+
   // new Modals 
+
+  const [isLoading , setIsLoading] = useState(false)
+
   const [dataAttacked, setDataAttacked] = useState([])
 
-  const handleSetGroup = () => {
-    props.setGroup([...props.group, newGroup])
+  const [ proper , setProper ] = useState('')
+  const [ properSelectBox , setProperSelectBox ] = useState([])
+
+  const [ currentpage , setCurrentPage ] = useState(1)
+  const [ messageCurrentPage , setMessageCurrentPage ] = useState(1)
+
+  const handleSetGroup = async() => {
+    if(!messageChecked.length > 0 || !newGroup.length > 0){
+      return null
+    }
     setNewGroup('')
+    const res = await axios.post('http://localhost:5000/v1/messagegroup' , { name:newGroup , messages:messageChecked })
+    props.setGroup([ res.data.messageGroup , ...props.group])
+    props.onClose(false)
   }
 
   useEffect(() => {
@@ -69,16 +89,68 @@ const Modals = ({ ...props }) => {
 
   }, [props.isOpen])
 
-  useEffect(() => {
-    console.log(selectMessage)
-  }, [selectMessage])
+  // useEffect(() => {
+  //   console.log('text' , props.newMessage)
+  // }, [props.newMessage])
 
   const handleSetSelectMessage = () => {
-    setDataSelectMessage([...dataSelectMessage, selectMessage])
+    setDataSelectMessage([...dataSelectMessage, props.newMessage])
     setSelectMessage('')
   }
+  const handleAcceptNewMessage  =async()=>{
+   
+    const res = await axios.post('http://localhost:5000/v1/addmessage' , {content:props.newMessage})
+    setAllMessages([...allMessage, ...res.data.messArray])
+    props.setNewMessage('')
+
+  }
+
+  const handleSendMessage =async()=>{
+    setIsLoading(true)
+    const res = await axios.patch('http://localhost:5000/v1/message' , {allMessage})
+    setIsLoading(false)
+    setDataSelectMessage([])
+    props.onCloseMessageSelect2(false)
+  }
+
+  useEffect(()=>{
+    const fetch =async()=>{
+      if(props.isOpenMessageSelect){
+        const res = await axios.get(`http://localhost:5000/v1/message?page=${currentpage}`)
+        setAllMessages(res.data.messages)
+      }if(props.isOpenMessageSelect2){
+        const res = await axios.get('http://localhost:5000/v1/proper')
+        const res2 = await axios.get(`http://localhost:5000/v1/message?page=${currentpage}`)
+        setProperSelectBox(res.data.proper)
+        setAllMessages(res2.data.messages)
+      }
+    }
+    fetch()
+
+  },[props.isOpenMessageSelect , props.isOpenMessageSelect2 , currentpage , messageCurrentPage])
 
 
+  const handleAddMessage = ()=>{
+    props.onCloseMessageSelect(false)
+  }
+
+  const handleProper =async ()=>{
+
+    const res = await axios.post('http://localhost:5000/v1/proper' , {proper} )
+    setProperSelectBox([...properSelectBox , res.data.resProper])
+    setProper('')
+    onClose(false)
+
+  }
+
+  const handleCurrentPage = (e)=>{
+
+    setCurrentPage(e)
+
+  }
+  const handleMessageCurrentPage =(e)=>{
+    setMessageCurrentPage(e)
+  }
 
   return (
     <>
@@ -134,24 +206,44 @@ const Modals = ({ ...props }) => {
                       </Thead>
                       <Tbody>
                         {
-                          Array(4).fill().map((item, index) => (
+                          allMessage.map((item, index) => (
                             <Tr>
-                              <Td>{index + 1}</Td>
-                              <Td fontSize='xs'>خالی</Td>
-                              <Td><Checkbox onChange={e => setMessageChecked({ ...messageChecked, [index]: e.target.checked })}></Checkbox></Td>
+                              <Td>{((messageCurrentPage - 1 )* 6 ) + index + 1}</Td>
+                              <Td fontSize='xs'>{item?.content}</Td>
+                              <Td><Checkbox isChecked={messageChecked.includes(item?._id)}  onChange={(e)=>{
+                                if(e.target.checked){
+                                  setMessageChecked([
+                                    ...messageChecked , item?._id
+                                  ])
+                                }else {
+                                  setMessageChecked(
+                                    messageChecked.filter((v)=> item?._id !== v)
+                                  )
+                                }
+                              }}></Checkbox></Td>
                             </Tr>
                           ))
                         }
                       </Tbody>
                     </Table>
                   </TableContainer>
-                  <Button mt={'2'} fontSize='xs' backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }}>ثبت</Button>
                 </CardBody>
+                <CardFooter>
+                <HStack justifyContent={'space-between'} w={'100%'}>
+                <ResponsivePagination
+                  current={messageCurrentPage}
+                  total={100}
+                  onPageChange={handleMessageCurrentPage}
+                  maxWidth={'100px'}
+                />
+           <Button mt={'2'} fontSize='xs' backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }} onClick={()=>handleAddMessage()} >ثبت</Button>
+          </HStack>
+                </CardFooter>
               </Card>
             </HStack>
           </ModalBody>
           <ModalFooter>
-            <Button onClick={props.onCloseMessageSelect} fontSize='xs' backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }}>بستن</Button>
+         
           </ModalFooter>
         </ModalContent>
       </Modal>
@@ -169,8 +261,8 @@ const Modals = ({ ...props }) => {
                 </CardHeader>
                 <CardBody>
                   <HStack justifyContent={'right'}>
-                    <IconButton icon={<SiAddthis />} color='gray.600' variant='soft' onClick={handleSetSelectMessage} />
-                    <Input w={'container.sm'} value={selectMessage} onChange={(e) => setSelectMessage(e.target.value)} />
+                    <IconButton icon={<SiAddthis />} color='gray.600' variant='soft' onClick={handleAcceptNewMessage} />
+                    <Input w={'container.sm'} value={props.newMessage} onChange={(e) => props.setNewMessage([e.target.value])} />
                   </HStack>
                   <TableContainer sx={{ direction: 'rtl' }}>
                     <Table variant='simple' size='lg' >
@@ -184,15 +276,20 @@ const Modals = ({ ...props }) => {
                       </Thead>
                       <Tbody>
                         {
-                          dataSelectMessage?.map((item, index) => (
+                          allMessage?.map((item, index) => (
                             <Tr>
-                              <Td>{index + 1}</Td>
-                              <Td>{item}</Td>
+                              <Td>{((currentpage - 1 )* 6 ) + index + 1}</Td>
+                              <Td>{item.content}</Td>
                               <Td>
-                                <FormControl >
-                                  <Select >
+                                  <Select  onChange={(e)=>{setAllMessages(allMessage.map((v)=>(
+                                    item._id === v._id ? {...v , content:v.content , proper:e.target.value} : v
+                                  )))}}>
+                                    {
+                                      properSelectBox.map((item2 , index)=>(
+                                        <option  selected={item2._id === item.proper} value={item2._id}>{item2.proper}</option>
+                                      ))
+                                    }
                                   </Select>
-                                </FormControl>
                               </Td>
                               <Td>
                               <IconButton icon={<SiAddthis />} color='gray.600' variant='soft' onClick={onOpen} />
@@ -203,13 +300,23 @@ const Modals = ({ ...props }) => {
                       </Tbody>
                     </Table>
                   </TableContainer>
-                  <Button mt={'2'} fontSize='xs' backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }}>ثبت</Button>
                 </CardBody>
+                <CardFooter>
+                 <HStack justifyContent={'space-between'} w={'100%'}>
+                <ResponsivePagination
+                  current={currentpage}
+                  total={100}
+                  onPageChange={handleCurrentPage}
+                  maxWidth={'100px'}
+                />
+                 <Button isLoading={isLoading} mt={'2'} fontSize='xs' backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }} onClick={()=>handleSendMessage()}>ثبت</Button>
+                 </HStack>
+                </CardFooter>
               </Card>
             </VStack>
           </ModalBody>
           <ModalFooter>
-            <Button onClick={props.onCloseMessageSelect2} fontSize='xs' backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }}>بستن</Button>
+            
           </ModalFooter>
         </ModalContent>
       </Modal>
@@ -226,11 +333,11 @@ const Modals = ({ ...props }) => {
           <ModalBody>
             <VStack direction={'column'}>
               <HStack justifyContent={'space-between'} >
-                <Input mr={'5'} size={'md'} />
+                <Input mr={'5'} size={'md'} value={proper} onChange={(e)=>setProper(e.target.value)}/>
                 <label fontSize='xs' style={{width:'150px' , textAlign:'right '}} >پیامک مناسب</label>
               </HStack>
               <HStack justifyContent={'space-between'} my={'30px'} w='100%'>
-                <Button fontSize='xs' backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }}>ثبت</Button>
+                <Button fontSize='xs' backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }} onClick={()=>handleProper()} >ثبت</Button>
               </HStack>
             </VStack>
           </ModalBody>
@@ -241,64 +348,6 @@ const Modals = ({ ...props }) => {
 
 
       {/* new Modals for attacked  */}
-
-      <Modal onClose={onCloseAttacked} size={'full'} isOpen={isOpenAttacked}  >
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader ></ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <VStack justifyContent={'center'}>
-              <HStack float={'left'} width={'max'}>
-                <Button mb={'5'} onClick={onOpenGroupAttacked} fontSize='xs' backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }}>ایجاد گروه عملیات شده</Button>
-              </HStack>
-              <Card width={'calc(100% - 80px)'}>
-                <CardHeader backgroundColor={'#4662b2'} color={'white'} textAlign={'center'} borderRadius={'5px'}>
-                  <Text>گروه عملیات شده</Text>
-                </CardHeader>
-                <CardBody>
-                  <HStack>
-                    <IconButton icon={<SiAddthis />} color='gray.600' variant='soft' onClick={handleSetSelectMessage} />
-                    <Input w={'container.sm'} value={selectMessage} onChange={(e) => setSelectMessage(e.target.value)} />
-                  </HStack>
-                  <TableContainer sx={{ direction: 'rtl' }}>
-                    <Table variant='simple' size='lg' >
-                      <Thead>
-                        <Tr>
-                          <Th><Text fontSize='xs'>ردیف</Text></Th>
-                          <Th fontSize='xs'>نام گروه عملیات شده</Th>
-                          <Th></Th>
-                        </Tr>
-                      </Thead>
-                      <Tbody>
-                        {
-                          Array(4).fill().map((item, index) => (
-                            <Tr>
-                              <Td>{index + 1}</Td>
-                              <Td>{item}</Td>
-                              <Td><Menu >
-                                <MenuButton as={IconButton} color='gray.600' variant='soft' icon={<FaEllipsisV />}  >
-                                  Actions
-                                </MenuButton>
-                                <MenuList>
-                                  <MenuItem onClick={() => handleEditMessage(index, item)} fontSize='xs'>ویرایش</MenuItem>
-                                </MenuList>
-                              </Menu></Td>
-                            </Tr>
-                          ))
-                        }
-                      </Tbody>
-                    </Table>
-                  </TableContainer>
-                </CardBody>
-              </Card>
-            </VStack>
-          </ModalBody>
-          <ModalFooter>
-            <Button onClick={onCloseAttacked} fontSize='xs' backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }}>بستن</Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
 
       <Modal isOpen={isOpenGroupAttacked} onClose={onCloseGroupAttacked} size={'xl'}>
       <ModalOverlay
@@ -387,7 +436,7 @@ const Modals = ({ ...props }) => {
                   <Text>لیست گروه کاری عملیات شده</Text>
                 </CardHeader>
                 <CardBody>
-                  <HStack>
+                  <HStack justifyContent={'right'}>
                     <IconButton icon={<SiAddthis />} color='gray.600' variant='soft' onClick={handleSetSelectMessage} />
                     <Input w={'container.sm'} value={selectMessage} onChange={(e) => setSelectMessage(e.target.value)} />
                   </HStack>
@@ -436,7 +485,7 @@ const Modals = ({ ...props }) => {
       backdropFilter='blur(5px)'
     />
         <ModalContent>
-          <ModalHeader>Modal Title</ModalHeader>
+          <ModalHeader></ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <VStack direction={'column'}>
@@ -456,64 +505,6 @@ const Modals = ({ ...props }) => {
 
 
       {/* new Modals for attacking  */}
-
-
-      <Modal onClose={onCloseGroupAttacking} size={'full'} isOpen={isOpenGroupAttacking}  >
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader ></ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <VStack justifyContent={'center'} >
-              <HStack textAlign={'end'} width={'100%'} ml={24}>
-                <Button mb={'5'} onClick={onOpenAddGroupAttacking} backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }} rightIcon={<IoAdd fontSize='25px' />} fontSize={'sm'}>ایجاد گروه عملیات کننده</Button>
-              </HStack>
-              <Card width={'calc(100% - 80px)'}>
-                <CardHeader backgroundColor={'#4662b2'} color={'white'} textAlign={'center'} borderRadius={'5px'}>
-                  <Text>گروه عملیات کننده</Text>
-                </CardHeader>
-                <CardBody>
-                  <TableContainer sx={{ direction: 'rtl' }}>
-                    <Table variant='simple' size='lg' >
-                      <Thead>
-                        <Tr>
-                          <Th boxSize={2}><Text>ردیف</Text></Th>
-                          <Th width={'100%'}>نام گروه کاری عملیات کننده</Th>
-                          <Th></Th>
-                        </Tr>
-                      </Thead>
-                      <Tbody>
-                        {
-                          Array(4).fill().map((item, index) => (
-                            <Tr>
-                              <Td>{index + 1}</Td>
-                              <Td>{item}</Td>
-                              <Td>
-                                <Menu >
-                                  <MenuButton as={IconButton} color='gray.600' variant='soft' icon={<FaEllipsisV />}  >
-                                    Actions
-                                  </MenuButton>
-                                  <MenuList>
-                                    <MenuItem onClick={() => handleEditMessage(index, item)}>ویرایش</MenuItem>
-                                  </MenuList>
-                                </Menu>
-                              </Td>
-                            </Tr>
-                          ))
-                        }
-                      </Tbody>
-                    </Table>
-                  </TableContainer>
-                  <Button mt={'2'} backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }}>ثبت</Button>
-                </CardBody>
-              </Card>
-            </VStack>
-          </ModalBody>
-          <ModalFooter>
-            <Button onClick={onCloseGroupAttacking} backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }}>بستن</Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
 
 
       <Modal isOpen={isOpenAddGroupAttacking} onClose={onCloseAddGroupAttacking} size={'xl'}>

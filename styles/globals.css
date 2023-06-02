@@ -3,3 +3,6 @@ body {
   margin: 0;
   font-family: Estedad;
 }
+.chakra-select__icon-wrapper{
+  display: none !important;
+}
