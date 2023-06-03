@@ -238,8 +238,8 @@ const Modals = ({ ...props }) => {
           <ModalBody>
             <VStack direction={'column'}>
               <HStack justifyContent={'space-between'} mb={'30px'}>
-                <Input mr={'5'} size={'md'} onChange={(v) => setNewGroup(v.target.value)} value={newGroup} />
-                <label fontSize='xs' style={{ width: '150px', textAlign: 'right' }}>نام گروه پیامکی</label>
+                <Input mr={'5'} size={'md'} onChange={(v) => setNewGroup(v.target.value)} value={newGroup} textAlign={'right'}/>
+                <label fontSize='xs' style={{ width: '180px', textAlign: 'right' }}>نام گروه پیامکی</label>
               </HStack>
               <HStack justifyContent={'space-between'} my={'30px'} w={'80%'}>
                 <Button onClick={handleSetGroup} fontSize='xs' backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }}>ثبت</Button>
@@ -334,8 +334,8 @@ const Modals = ({ ...props }) => {
                 </CardHeader>
                 <CardBody>
                   <HStack justifyContent={'right'}>
-                    <IconButton icon={<SiAddthis />} color='gray.600' variant='soft' onClick={handleAcceptNewMessage} />
-                    <Input w={'container.sm'} value={props.newMessage} onChange={(e) => props.setNewMessage([e.target.value])} />
+                    <IconButton icon={<IoAdd />}  onClick={handleAcceptNewMessage} />
+                    <Input w={'container.sm'} value={props.newMessage} onChange={(e) => props.setNewMessage([e.target.value])} textAlign={'right'} placeholder='متن پیامک'/>
                   </HStack>
                   <TableContainer sx={{ direction: 'rtl' }}>
                     <Table variant='simple' size='lg' >
@@ -367,7 +367,7 @@ const Modals = ({ ...props }) => {
                                 </Select>
                               </Td>
                               <Td>
-                                <IconButton icon={<SiAddthis />} color='gray.600' variant='soft' onClick={onOpen} />
+                                <IconButton icon={<IoAdd />}  onClick={onOpen} />
                               </Td>
                             </Tr>
                           ))
@@ -408,7 +408,7 @@ const Modals = ({ ...props }) => {
           <ModalBody>
             <VStack direction={'column'}>
               <HStack justifyContent={'space-between'} >
-                <Input mr={'5'} size={'md'} value={proper} onChange={(e) => setProper(e.target.value)} />
+                <Input mr={'5'} size={'md'} value={proper} textAlign={'right'} onChange={(e) => setProper(e.target.value)} />
                 <label fontSize='xs' style={{ width: '150px', textAlign: 'right ' }} >پیامک مناسب</label>
               </HStack>
               <HStack justifyContent={'space-between'} my={'30px'} w='100%'>
@@ -509,7 +509,8 @@ const Modals = ({ ...props }) => {
                 </Button>
                 <HStack>
                 <IconButton icon={<IoAdd/>} />
-                <Input placeholder='نام و نام خانوادگی' textAlign={'right'} />
+                <Input placeholder='نام خانوادگی' textAlign={'right'} w={'350px'}/>
+                <Input placeholder='نام' textAlign={'right'} w={'250px'}/>
                 </HStack>
               </HStack>
               <Card width={'calc(100% - 80px)'}>
@@ -596,7 +597,7 @@ const Modals = ({ ...props }) => {
           <ModalBody>
             <VStack direction={'column'}>
               <HStack justifyContent={'space-between'} mb={6}>
-                <Input mr={'5'} size={'md'} onChange={(v) => setNameOfAttackingGroup(v.target.value)} value={nameOfAttackingGroup} />
+                <Input mr={'5'} size={'md'} onChange={(v) => setNameOfAttackingGroup(v.target.value)} value={nameOfAttackingGroup} textAlign={'right'}/>
                 <label style={{ fontSize: '12px', width: '180px', textAlign: 'right' }}>نام گروه عملیات کننده</label>
               </HStack>
               <HStack justifyContent={'space-between'} my={'30px'} w={'85%'}>
@@ -617,7 +618,7 @@ const Modals = ({ ...props }) => {
           <ModalCloseButton />
           <ModalBody>
             <VStack justifyContent={'center'} >
-              <HStack float={'left'} width={'max'} w={'94%'}>
+              <HStack float={'left'} width={'max'} w={'96.5%'}>
                 <Button mb={'5'} onClick={onOpenAddNumber} backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }} rightIcon={<IoAdd fontSize='25px' />}>اضافه کردن سیم کارت</Button>
               </HStack>
               <Card width={'calc(100% - 80px)'}>
@@ -680,23 +681,23 @@ const Modals = ({ ...props }) => {
                 </CardHeader>
                 <CardBody>
                   <HStack justifyContent={'space-between'} mb={5}>
-                    <Input mr={'5'} size={'md'} onChange={(v) => setNumber(v.target.value)} value={number} />
+                    <Input mr={'5'} size={'md'} onChange={(v) => setNumber(v.target.value)} value={number} textAlign={'right'}/>
                     <label style={{ width: '100px', textAlign: 'right' }}>شماره</label>
                   </HStack>
                   <HStack justifyContent={'space-between'} mb={5}>
-                    <IconButton icon={<SiAddthis />} color='gray.600' variant='soft' onClick={onOpenOperator} />
-                    <Select onChange={(e) => setOperatorName(e.target.value)}>
+                    <IconButton icon={<IoAdd />}  onClick={onOpenOperator} />
+                    <Select onChange={(e) => setOperatorName(e.target.value)} textAlign={'right'}>
                       {
                         operatorNameList.map((item, index) => (
                           <option value={item?._id}>{item?.name}</option>
                         ))
                       }
                     </Select>
-                    <label style={{ width: 'calc(100px + 35px)', textAlign: 'right' }}>نام اپراتور</label>
+                    <label style={{ width: 'calc(100px + 35px)', textAlign: 'right' }} >نام اپراتور</label>
                   </HStack>
                   <HStack justifyContent={'space-between'} mb={5}>
-                    <IconButton icon={<SiAddthis />} color='gray.600' variant='soft' onClick={onOpenOwner} />
-                    <Select onChange={(e) => setOwnerName(e.target.value)} >
+                    <IconButton icon={<IoAdd />}  onClick={onOpenOwner} />
+                    <Select onChange={(e) => setOwnerName(e.target.value)} textAlign={'right'}>
                       {
                         ownerShipList.map((item, index) => (
                           <option value={item?._id}>{item?.name}</option>
@@ -706,11 +707,11 @@ const Modals = ({ ...props }) => {
                     <label style={{ width: 'calc(100px + 35px)', textAlign: 'right' }}>مالکیت</label>
                   </HStack >
                   <HStack justifyContent={'space-between'} mb={5}>
-                    <IconButton icon={<SiAddthis />} color='gray.600' variant='soft' onClick={onOpenLocation} />
-                    <Select onClick={(e) => setLocationName(e.target.value)} >
+                    <IconButton icon={<IoAdd />}  onClick={onOpenLocation} />
+                    <Select onClick={(e) => setLocationName(e.target.value)} textAlign={'right'}>
                       {
                         locationList.map((item, index) => (
-                          <option value={item?._id}>{item?.name}</option>
+                          <option value={item?._id} >{item?.name}</option>
                         ))
                       }
                     </Select>
@@ -771,7 +772,7 @@ const Modals = ({ ...props }) => {
           <ModalBody>
             <VStack direction={'column'}>
               <HStack justifyContent={'space-between'} mb={6}>
-                <Input mr={'5'} size={'md'} onChange={(v) => setOpOwnLocName(v.target.value)} value={opOwnLocName} />
+                <Input mr={'5'} size={'md'} onChange={(v) => setOpOwnLocName(v.target.value)} value={opOwnLocName} textAlign={'right'}/>
                 <label style={{ fontSize: '12px', width: '180px', textAlign: 'right' }}>اضافه کردن اپراتور</label>
               </HStack>
               <HStack justifyContent={'space-between'} my={'30px'} w={'85%'}>
