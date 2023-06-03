@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Nav from '../nav'
-import { Card, CardFooter, CardBody, CardHeader, Text, Table, TableContainer, Thead, Th, Tr, Tbody, Td, Menu, MenuButton, MenuList, IconButton, MenuItem, Button, VStack, HStack, onOpen } from '@chakra-ui/react'
+import { Card, CardFooter, CardBody, CardHeader, Text, Table, TableContainer, Thead, Th, Tr, Tbody, Td, Menu, MenuButton, MenuList, IconButton, MenuItem, Button, VStack, HStack, onOpen , Input } from '@chakra-ui/react'
 import { FaEllipsisV } from "react-icons/fa";
 import axios from 'axios';
 import { useDisclosure } from '@chakra-ui/react';
@@ -16,6 +16,8 @@ const index = () => {
 
   const { isOpen: isOpenAddGroupAttacking, onOpen: onOpenAddGroupAttacking , onClose: onCloseAddGroupAttacking } = useDisclosure()
 
+  const [editIndex , setEditIndex] = useState()
+  const [editText , setEditText] = useState('')
 
   useEffect(() => {
 
@@ -27,6 +29,28 @@ const index = () => {
     fetch()
 
   }, [])
+
+  const handleEditAttackingGroup = (index , item)=>{
+    setEditIndex(index)
+    setEditText(item.name)
+  }
+
+  const handleNewData = async(e , data , item2)=>{
+        if(e.key === 'Enter'){
+          console.log({...data , name:item2})
+          const res = await axios.patch(`http://localhost:5000/v1/attacking` , { ...data , name:item2 })
+          let text =[]
+          listAttacking.forEach((item , index)=>{
+            if(item._id , data._id){
+              text.push({...data , name:item2})
+            }else {
+              text.push(item)
+            }
+          })
+          setListAttacking(text)
+          setEditIndex(null)
+        }
+  }
 
   return (
     <>
@@ -56,14 +80,14 @@ const index = () => {
                       listAttacking.map((item, index) => (
                         <Tr>
                           <Td>{index + 1}</Td>
-                          <Td>{item?.name}</Td>
+                          <Td>{ editIndex === index ? <Input onKeyDown={(e) => handleNewData(e , item ,editText)} value={editText} onChange={(e) => setEditText(e.target.value)} />  : item?.name}</Td>
                           <Td>
                             <Menu >
                               <MenuButton as={IconButton} color='gray.600' variant='soft' icon={<FaEllipsisV />}  >
                                 Actions
                               </MenuButton>
                               <MenuList>
-                                <MenuItem onClick={() => handleEditMessage(index, item)}>ویرایش</MenuItem>
+                                <MenuItem onClick={() => handleEditAttackingGroup(index, item)}>ویرایش</MenuItem>
                               </MenuList>
                             </Menu>
                           </Td>
@@ -73,7 +97,6 @@ const index = () => {
                   </Tbody>
                 </Table>
               </TableContainer>
-              <Button mt={'2'} backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }}>ثبت</Button>
             </CardBody>
           </Card>
 

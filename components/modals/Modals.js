@@ -58,6 +58,7 @@ const Modals = ({ ...props }) => {
 
   const [messageChecked, setMessageChecked] = useState([])
 
+
   const [dataSelectMessage, setDataSelectMessage] = useState([])
 
   const [allMessage, setAllMessages] = useState([])
@@ -74,7 +75,12 @@ const Modals = ({ ...props }) => {
   const [locationList , setLocationList] = useState([])
   const [ownerShipList , setOwnerShipList] = useState([])
   const [operatorNameList , setOperatorNameList] = useState([])
+  const [simNumberChecked , setSimNumberChecked] = useState([])
   // new Modals 
+
+  useEffect(()=>{
+    console.log(simNumberChecked)
+  },[simNumberChecked])
 
   const [isLoading, setIsLoading] = useState(false)
 
@@ -99,11 +105,11 @@ const Modals = ({ ...props }) => {
 
   const handleSetAttackingGroup = async () => {
 
-    if (!nameOfAttackingGroup.length > 0) {
+    if (!nameOfAttackingGroup.length > 0  , !simNumberChecked.length > 0) {
       return null
     }
-    setNameOfAttackingGroup('')
     const res = await axios.post('http://localhost:5000/v1/attacking', { name: nameOfAttackingGroup })
+    setNameOfAttackingGroup('')
     props.setListAttacking([res.data.attacking, ...props.listAttacking])
     props.onCloseAddGroupAttacking(false)
 
@@ -633,7 +639,13 @@ const Modals = ({ ...props }) => {
                               <Td>{index + 1}</Td>
                               <Td>{item.number}</Td>
                               <Td>
-                                <Checkbox ></Checkbox>
+                                <Checkbox onChange={(e)=>{
+                                  if(e.target.checked){
+                                      setSimNumberChecked([...simNumberChecked , item._id])
+                                  }else {
+                                      setSimNumberChecked(simNumberChecked.filter((v)=>v !== item._id))
+                                  }
+                                }}></Checkbox>
                               </Td>
                             </Tr>
                           ))
@@ -641,7 +653,7 @@ const Modals = ({ ...props }) => {
                       </Tbody>
                     </Table>
                   </TableContainer>
-                  <Button mt={'2'} backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }}>ثبت</Button>
+                  <Button mt={'2'} backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }} onClick={()=>onCloseNumber(false)}>ثبت</Button>
                 </CardBody>
               </Card>
             </VStack>
