@@ -68,19 +68,19 @@ const Modals = ({ ...props }) => {
 
   //add simNumber Section
   const [opOwnLocName, setOpOwnLocName] = useState('')
-  const [operatorName , setOperatorName] = useState('')
-  const [locationName , setLocationName] = useState('')
-  const [ownerName , setOwnerName] = useState('')
-  const [number , setNumber] = useState('')
-  const [locationList , setLocationList] = useState([])
-  const [ownerShipList , setOwnerShipList] = useState([])
-  const [operatorNameList , setOperatorNameList] = useState([])
-  const [simNumberChecked , setSimNumberChecked] = useState([])
+  const [operatorName, setOperatorName] = useState('')
+  const [locationName, setLocationName] = useState('')
+  const [ownerName, setOwnerName] = useState('')
+  const [number, setNumber] = useState('')
+  const [locationList, setLocationList] = useState([])
+  const [ownerShipList, setOwnerShipList] = useState([])
+  const [operatorNameList, setOperatorNameList] = useState([])
+  const [simNumberChecked, setSimNumberChecked] = useState([])
   // new Modals 
 
-  useEffect(()=>{
+  useEffect(() => {
     console.log(simNumberChecked)
-  },[simNumberChecked])
+  }, [simNumberChecked])
 
   const [isLoading, setIsLoading] = useState(false)
 
@@ -105,7 +105,7 @@ const Modals = ({ ...props }) => {
 
   const handleSetAttackingGroup = async () => {
 
-    if (!nameOfAttackingGroup.length > 0  , !simNumberChecked.length > 0) {
+    if (!nameOfAttackingGroup.length > 0, !simNumberChecked.length > 0) {
       return null
     }
     const res = await axios.post('http://localhost:5000/v1/attacking', { name: nameOfAttackingGroup })
@@ -160,7 +160,7 @@ const Modals = ({ ...props }) => {
       } if (isOpenNumber) {
         const res = await axios.get(`http://localhost:5000/v1/simnumber?page=${currentpage}`)
         setDataOfSimNumber(res.data.simNumber)
-      }if(isOpenAddNumber){
+      } if (isOpenAddNumber) {
         const resLocation = await axios.get(`http://localhost:5000/v1/location`)
         const resOwnerShip = await axios.get(`http://localhost:5000/v1/ownership`)
         const resOperatorName = await axios.get(`http://localhost:5000/v1/operatorname`)
@@ -173,7 +173,7 @@ const Modals = ({ ...props }) => {
     }
     fetch()
 
-  }, [props.isOpenMessageSelect, props.isOpenMessageSelect2, currentpage, messageCurrentPage, isOpenNumber , isOpenAddNumber])
+  }, [props.isOpenMessageSelect, props.isOpenMessageSelect2, currentpage, messageCurrentPage, isOpenNumber, isOpenAddNumber])
 
 
 
@@ -200,9 +200,9 @@ const Modals = ({ ...props }) => {
     setMessageCurrentPage(e)
   }
 
-  const handleAddSimNumber = async() => {
+  const handleAddSimNumber = async () => {
 
-    const res = await axios.post(`http://localhost:5000/v1/simnumber` , {operatorname:operatorName , ownership:ownerName ,loc:locationName , number})
+    const res = await axios.post(`http://localhost:5000/v1/simnumber`, { operatorname: operatorName, ownership: ownerName, loc: locationName, number })
   }
 
   const handleInfoAddSim = async () => {
@@ -216,14 +216,14 @@ const Modals = ({ ...props }) => {
     }
     const res = await axios.post(`http://localhost:5000/v1/${searchKey}`, { name: opOwnLocName })
     setOpOwnLocName('')
-    searchKey === 'location' ? setLocationList([res.data.location , ...locationList]) : searchKey === 'operatorname' ? setOperatorNameList([ res.data.operatorName , ...operatorNameList ]) : setOwnerShipList([res.data.ownerShip , ...ownerShipList])
+    searchKey === 'location' ? setLocationList([res.data.location, ...locationList]) : searchKey === 'operatorname' ? setOperatorNameList([res.data.operatorName, ...operatorNameList]) : setOwnerShipList([res.data.ownerShip, ...ownerShipList])
   }
 
-  useEffect(()=>{
+  useEffect(() => {
 
     setOpOwnLocName('')
 
-  },[isOpenOwner , isOpenLocation , isOpenOperator])
+  }, [isOpenOwner, isOpenLocation, isOpenOperator])
 
   return (
     <>
@@ -424,7 +424,7 @@ const Modals = ({ ...props }) => {
 
       {/* new Modals for attacked  */}
 
-      <Modal isOpen={isOpenGroupAttacked} onClose={onCloseGroupAttacked} size={'xl'}>
+      <Modal isOpen={props.isOpenAddGroupName} onClose={props.onCloseAddGroupName} size={'xl'}>
         <ModalOverlay
           bg='blackAlpha.100'
           backdropFilter='blur(5px)'
@@ -434,13 +434,13 @@ const Modals = ({ ...props }) => {
           <ModalCloseButton />
           <ModalBody>
             <VStack direction={'column'}>
-              <HStack justifyContent={'space-between'} >
+              <HStack justifyContent={'space-between'} mb={8} >
                 <Input mr={'5'} size={'md'} onChange={(v) => setNewGroup(v.target.value)} value={newGroup} />
-                <label fontSize='xs'>نام گروه عملیات شده</label>
+                <label fontSize='xs' style={{ width: '240px', textAlign: 'right ' }}>نام گروه عملیات شده</label>
               </HStack>
-              <HStack justifyContent={'space-between'} my={'30px'}>
+              <HStack justifyContent={'space-between'} my={'30px'} w='100%'>
                 <Button onClick={handleSetGroup} fontSize='xs' backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }}>ثبت</Button>
-                <Button onClick={handleSetGroup} fontSize='xs' backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }}>اسامی گروه عملیات شده</Button>
+                <Button onClick={onOpenListAttacked} fontSize='xs' backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }}>اسامی گروه عملیات شده</Button>
               </HStack>
             </VStack>
           </ModalBody>
@@ -496,25 +496,27 @@ const Modals = ({ ...props }) => {
       </Modal>
 
 
-      <Modal onClose={onCloseWorkGrouopAttacked} size={'full'} isOpen={isOpenWorkGrouopAttacked}  >
+      <Modal onClose={props.onCloseWorkGrouopAttacked} size={'full'} isOpen={props.isOpenWorkGrouopAttacked}  >
         <ModalOverlay />
         <ModalContent>
           <ModalHeader ></ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <VStack justifyContent={'center'}>
-              <HStack float={'left'} width={'max'}>
-                <Button mb={'5'} onClick={onOpenAddGroupAttacked} fontSize='xs' backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }}>ایجاد گروه عملیات شده</Button>
+              <HStack justifyContent={'space-between'} width={'96.5%'}  >
+                <Button onClick={onOpen} backgroundColor={'#4662b2'} color={'white'} rightIcon={<IoAdd fontSize='25px' />} _hover={{ backgroundColor: '#556eb8' }}>
+                  <Text fontSize='xs'>ایجاد گروه پیامکی</Text>
+                </Button>
+                <HStack>
+                <IconButton icon={<IoAdd/>} />
+                <Input placeholder='نام و نام خانوادگی' textAlign={'right'} />
+                </HStack>
               </HStack>
               <Card width={'calc(100% - 80px)'}>
                 <CardHeader backgroundColor={'#4662b2'} color={'white'} textAlign={'center'} borderRadius={'5px'}>
                   <Text>لیست گروه کاری عملیات شده</Text>
                 </CardHeader>
                 <CardBody>
-                  <HStack justifyContent={'right'}>
-                    <IconButton icon={<SiAddthis />} color='gray.600' variant='soft' onClick={handleSetSelectMessage} />
-                    <Input w={'container.sm'} value={selectMessage} onChange={(e) => setSelectMessage(e.target.value)} />
-                  </HStack>
                   <TableContainer sx={{ direction: 'rtl' }}>
                     <Table variant='simple' size='lg' >
                       <Thead>
@@ -639,11 +641,11 @@ const Modals = ({ ...props }) => {
                               <Td>{index + 1}</Td>
                               <Td>{item.number}</Td>
                               <Td>
-                                <Checkbox onChange={(e)=>{
-                                  if(e.target.checked){
-                                      setSimNumberChecked([...simNumberChecked , item._id])
-                                  }else {
-                                      setSimNumberChecked(simNumberChecked.filter((v)=>v !== item._id))
+                                <Checkbox onChange={(e) => {
+                                  if (e.target.checked) {
+                                    setSimNumberChecked([...simNumberChecked, item._id])
+                                  } else {
+                                    setSimNumberChecked(simNumberChecked.filter((v) => v !== item._id))
                                   }
                                 }}></Checkbox>
                               </Td>
@@ -653,7 +655,7 @@ const Modals = ({ ...props }) => {
                       </Tbody>
                     </Table>
                   </TableContainer>
-                  <Button mt={'2'} backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }} onClick={()=>onCloseNumber(false)}>ثبت</Button>
+                  <Button mt={'2'} backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }} onClick={() => onCloseNumber(false)}>ثبت</Button>
                 </CardBody>
               </Card>
             </VStack>
@@ -683,10 +685,10 @@ const Modals = ({ ...props }) => {
                   </HStack>
                   <HStack justifyContent={'space-between'} mb={5}>
                     <IconButton icon={<SiAddthis />} color='gray.600' variant='soft' onClick={onOpenOperator} />
-                    <Select onChange={(e)=>setOperatorName(e.target.value)}>
+                    <Select onChange={(e) => setOperatorName(e.target.value)}>
                       {
-                        operatorNameList.map((item , index)=>(
-                          <option  value={item?._id}>{item?.name}</option>
+                        operatorNameList.map((item, index) => (
+                          <option value={item?._id}>{item?.name}</option>
                         ))
                       }
                     </Select>
@@ -694,10 +696,10 @@ const Modals = ({ ...props }) => {
                   </HStack>
                   <HStack justifyContent={'space-between'} mb={5}>
                     <IconButton icon={<SiAddthis />} color='gray.600' variant='soft' onClick={onOpenOwner} />
-                    <Select onChange={(e)=>setOwnerName(e.target.value)} >
-                    {
-                        ownerShipList.map((item , index)=>(
-                          <option  value={item?._id}>{item?.name}</option>
+                    <Select onChange={(e) => setOwnerName(e.target.value)} >
+                      {
+                        ownerShipList.map((item, index) => (
+                          <option value={item?._id}>{item?.name}</option>
                         ))
                       }
                     </Select>
@@ -705,10 +707,10 @@ const Modals = ({ ...props }) => {
                   </HStack >
                   <HStack justifyContent={'space-between'} mb={5}>
                     <IconButton icon={<SiAddthis />} color='gray.600' variant='soft' onClick={onOpenLocation} />
-                    <Select onClick={(e)=>setLocationName(e.target.value)} >
-                    {
-                        locationList.map((item , index)=>(
-                          <option  value={item?._id}>{item?.name}</option>
+                    <Select onClick={(e) => setLocationName(e.target.value)} >
+                      {
+                        locationList.map((item, index) => (
+                          <option value={item?._id}>{item?.name}</option>
                         ))
                       }
                     </Select>
