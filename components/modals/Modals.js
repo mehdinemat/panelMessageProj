@@ -67,6 +67,10 @@ const Modals = ({ ...props }) => {
 
   //add simNumber Section
   const [opOwnLocName, setOpOwnLocName] = useState('')
+  const [operatorName , setOperatorName] = useState('')
+  const [locationName , setLocationName] = useState('')
+  const [ownerName , setOwnerName] = useState('')
+  const [number , setNumber] = useState('')
   const [locationList , setLocationList] = useState([])
   const [ownerShipList , setOwnerShipList] = useState([])
   const [operatorNameList , setOperatorNameList] = useState([])
@@ -190,10 +194,9 @@ const Modals = ({ ...props }) => {
     setMessageCurrentPage(e)
   }
 
-  const handleAddSimNumber = () => {
+  const handleAddSimNumber = async() => {
 
-    
-
+    const res = await axios.post(`http://localhost:5000/v1/simnumber` , {operatorname:operatorName , ownership:ownerName ,loc:locationName , number})
   }
 
   const handleInfoAddSim = async () => {
@@ -664,12 +667,12 @@ const Modals = ({ ...props }) => {
                 </CardHeader>
                 <CardBody>
                   <HStack justifyContent={'space-between'} mb={5}>
-                    <Input mr={'5'} size={'md'} onChange={(v) => setNewGroup(v.target.value)} value={newGroup} />
+                    <Input mr={'5'} size={'md'} onChange={(v) => setNumber(v.target.value)} value={number} />
                     <label style={{ width: '100px', textAlign: 'right' }}>شماره</label>
                   </HStack>
                   <HStack justifyContent={'space-between'} mb={5}>
                     <IconButton icon={<SiAddthis />} color='gray.600' variant='soft' onClick={onOpenOperator} />
-                    <Select >
+                    <Select onChange={(e)=>setOperatorName(e.target.value)}>
                       {
                         operatorNameList.map((item , index)=>(
                           <option  value={item?._id}>{item?.name}</option>
@@ -680,7 +683,7 @@ const Modals = ({ ...props }) => {
                   </HStack>
                   <HStack justifyContent={'space-between'} mb={5}>
                     <IconButton icon={<SiAddthis />} color='gray.600' variant='soft' onClick={onOpenOwner} />
-                    <Select >
+                    <Select onChange={(e)=>setOwnerName(e.target.value)} >
                     {
                         ownerShipList.map((item , index)=>(
                           <option  value={item?._id}>{item?.name}</option>
@@ -691,7 +694,7 @@ const Modals = ({ ...props }) => {
                   </HStack >
                   <HStack justifyContent={'space-between'} mb={5}>
                     <IconButton icon={<SiAddthis />} color='gray.600' variant='soft' onClick={onOpenLocation} />
-                    <Select >
+                    <Select onClick={(e)=>setLocationName(e.target.value)} >
                     {
                         locationList.map((item , index)=>(
                           <option  value={item?._id}>{item?.name}</option>
