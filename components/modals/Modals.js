@@ -659,7 +659,6 @@ const Modals = ({ ...props }) => {
             </VStack>
           </ModalBody>
           <ModalFooter>
-            <Button onClick={onCloseNumber} backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }}>بستن</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
