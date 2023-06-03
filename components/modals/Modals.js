@@ -20,7 +20,7 @@ import {
   MenuDivider,
   HStack,
   VStack,
-  CardHeader,CardFooter
+  CardHeader, CardFooter
 } from '@chakra-ui/react'
 
 import { SiAddthis } from "react-icons/si";
@@ -35,7 +35,7 @@ import { IoAdd } from 'react-icons/io5'
 
 import axios from 'axios';
 
-import ResponsivePagination  from 'react-responsive-pagination'
+import ResponsivePagination from 'react-responsive-pagination'
 
 
 const Modals = ({ ...props }) => {
@@ -49,6 +49,9 @@ const Modals = ({ ...props }) => {
   const { isOpen: isOpenAddGroupAttacking, onOpen: onOpenAddGroupAttacking, onClose: onCloseAddGroupAttacking } = useDisclosure()
   const { isOpen: isOpenNumber, onOpen: onOpenNumber, onClose: onCloseNumber } = useDisclosure()
   const { isOpen: isOpenAddNumber, onOpen: onOpenAddNumber, onClose: onCloseAddNumber } = useDisclosure()
+  const { isOpen: isOpenOwner, onOpen: onOpenOwner, onClose: onCloseOwner } = useDisclosure()
+  const { isOpen: isOpenLocation, onOpen: onOpenLocation, onClose: onCloseLocation } = useDisclosure()
+  const { isOpen: isOpenOperator, onOpen: onOpenOperator, onClose: onCloseOperator } = useDisclosure()
 
   const [newGroup, setNewGroup] = useState('')
   const [selectMessage, setSelectMessage] = useState('')
@@ -57,28 +60,49 @@ const Modals = ({ ...props }) => {
 
   const [dataSelectMessage, setDataSelectMessage] = useState([])
 
-  const [allMessage , setAllMessages] = useState([])
+  const [allMessage, setAllMessages] = useState([])
 
+  const [dataOfSimNumber, setDataOfSimNumber] = useState([])
+
+
+  //add simNumber Section
+  const [opOwnLocName, setOpOwnLocName] = useState('')
+  const [locationList , setLocationList] = useState([])
+  const [ownerShipList , setOwnerShipList] = useState([])
+  const [operatorNameList , setOperatorNameList] = useState([])
   // new Modals 
 
-  const [isLoading , setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   const [dataAttacked, setDataAttacked] = useState([])
+  const [nameOfAttackingGroup, setNameOfAttackingGroup] = useState('')
 
-  const [ proper , setProper ] = useState('')
-  const [ properSelectBox , setProperSelectBox ] = useState([])
+  const [proper, setProper] = useState('')
+  const [properSelectBox, setProperSelectBox] = useState([])
 
-  const [ currentpage , setCurrentPage ] = useState(1)
-  const [ messageCurrentPage , setMessageCurrentPage ] = useState(1)
+  const [currentpage, setCurrentPage] = useState(1)
+  const [messageCurrentPage, setMessageCurrentPage] = useState(1)
 
-  const handleSetGroup = async() => {
-    if(!messageChecked.length > 0 || !newGroup.length > 0){
+  const handleSetGroup = async () => {
+    if (!messageChecked.length > 0 || !newGroup.length > 0) {
       return null
     }
     setNewGroup('')
-    const res = await axios.post('http://localhost:5000/v1/messagegroup' , { name:newGroup , messages:messageChecked })
-    props.setGroup([ res.data.messageGroup , ...props.group])
+    const res = await axios.post('http://localhost:5000/v1/messagegroup', { name: newGroup, messages: messageChecked })
+    props.setGroup([res.data.messageGroup, ...props.group])
     props.onClose(false)
+  }
+
+  const handleSetAttackingGroup = async () => {
+
+    if (!nameOfAttackingGroup.length > 0) {
+      return null
+    }
+    setNameOfAttackingGroup('')
+    const res = await axios.post('http://localhost:5000/v1/attacking', { name: nameOfAttackingGroup })
+    props.setListAttacking([res.data.attacking, ...props.listAttacking])
+    props.onCloseAddGroupAttacking(false)
+
   }
 
   useEffect(() => {
@@ -97,68 +121,108 @@ const Modals = ({ ...props }) => {
     setDataSelectMessage([...dataSelectMessage, props.newMessage])
     setSelectMessage('')
   }
-  const handleAcceptNewMessage  =async()=>{
-   
-    const res = await axios.post('http://localhost:5000/v1/addmessage' , {content:props.newMessage})
+  const handleAcceptNewMessage = async () => {
+
+    const res = await axios.post('http://localhost:5000/v1/addmessage', { content: props.newMessage })
     setAllMessages([...allMessage, ...res.data.messArray])
     props.setNewMessage('')
 
   }
 
-  const handleSendMessage =async()=>{
+  const handleSendMessage = async () => {
     setIsLoading(true)
-    const res = await axios.patch('http://localhost:5000/v1/message' , {allMessage})
+    const res = await axios.patch('http://localhost:5000/v1/message', { allMessage })
     setIsLoading(false)
     setDataSelectMessage([])
     props.onCloseMessageSelect2(false)
   }
 
-  useEffect(()=>{
-    const fetch =async()=>{
-      if(props.isOpenMessageSelect){
+  useEffect(() => {
+    const fetch = async () => {
+      if (props.isOpenMessageSelect) {
         const res = await axios.get(`http://localhost:5000/v1/message?page=${currentpage}`)
         setAllMessages(res.data.messages)
-      }if(props.isOpenMessageSelect2){
+      } if (props.isOpenMessageSelect2) {
         const res = await axios.get('http://localhost:5000/v1/proper')
         const res2 = await axios.get(`http://localhost:5000/v1/message?page=${currentpage}`)
         setProperSelectBox(res.data.proper)
         setAllMessages(res2.data.messages)
+      } if (isOpenNumber) {
+        const res = await axios.get(`http://localhost:5000/v1/simnumber?page=${currentpage}`)
+        setDataOfSimNumber(res.data.simNumber)
+      }if(isOpenAddNumber){
+        const resLocation = await axios.get(`http://localhost:5000/v1/location`)
+        const resOwnerShip = await axios.get(`http://localhost:5000/v1/ownership`)
+        const resOperatorName = await axios.get(`http://localhost:5000/v1/operatorname`)
+        setOwnerShipList(resOwnerShip.data.ownerShip)
+        setLocationList(resLocation.data.location)
+        setOperatorNameList(resOperatorName.data.operatorName)
+
+
       }
     }
     fetch()
 
-  },[props.isOpenMessageSelect , props.isOpenMessageSelect2 , currentpage , messageCurrentPage])
+  }, [props.isOpenMessageSelect, props.isOpenMessageSelect2, currentpage, messageCurrentPage, isOpenNumber , isOpenAddNumber])
 
 
-  const handleAddMessage = ()=>{
+
+
+  const handleAddMessage = () => {
     props.onCloseMessageSelect(false)
   }
 
-  const handleProper =async ()=>{
+  const handleProper = async () => {
 
-    const res = await axios.post('http://localhost:5000/v1/proper' , {proper} )
-    setProperSelectBox([...properSelectBox , res.data.resProper])
+    const res = await axios.post('http://localhost:5000/v1/proper', { proper })
+    setProperSelectBox([...properSelectBox, res.data.resProper])
     setProper('')
     onClose(false)
 
   }
 
-  const handleCurrentPage = (e)=>{
+  const handleCurrentPage = (e) => {
 
     setCurrentPage(e)
 
   }
-  const handleMessageCurrentPage =(e)=>{
+  const handleMessageCurrentPage = (e) => {
     setMessageCurrentPage(e)
   }
+
+  const handleAddSimNumber = () => {
+
+    
+
+  }
+
+  const handleInfoAddSim = async () => {
+    let searchKey = ''
+    if (isOpenLocation) {
+      searchKey = 'location'
+    } if (isOpenOwner) {
+      searchKey = 'ownership'
+    } if (isOpenOperator) {
+      searchKey = 'operatorname'
+    }
+    const res = await axios.post(`http://localhost:5000/v1/${searchKey}`, { name: opOwnLocName })
+    setOpOwnLocName('')
+    searchKey === 'location' ? setLocationList([res.data.location , ...locationList]) : searchKey === 'operatorname' ? setOperatorNameList([ res.data.operatorName , ...operatorNameList ]) : setOwnerShipList([res.data.ownerShip , ...ownerShipList])
+  }
+
+  useEffect(()=>{
+
+    setOpOwnLocName('')
+
+  },[isOpenOwner , isOpenLocation , isOpenOperator])
 
   return (
     <>
       <Modal isOpen={props.isOpen} onClose={props.onClose} size={'xl'}>
-      <ModalOverlay
-      bg='blackAlpha.100'
-      backdropFilter='blur(5px)'
-    />
+        <ModalOverlay
+          bg='blackAlpha.100'
+          backdropFilter='blur(5px)'
+        />
         <ModalContent>
           <ModalHeader></ModalHeader>
           <ModalCloseButton />
@@ -166,7 +230,7 @@ const Modals = ({ ...props }) => {
             <VStack direction={'column'}>
               <HStack justifyContent={'space-between'} mb={'30px'}>
                 <Input mr={'5'} size={'md'} onChange={(v) => setNewGroup(v.target.value)} value={newGroup} />
-                <label fontSize='xs' style={{width:'150px' , textAlign:'right'}}>نام گروه پیامکی</label>
+                <label fontSize='xs' style={{ width: '150px', textAlign: 'right' }}>نام گروه پیامکی</label>
               </HStack>
               <HStack justifyContent={'space-between'} my={'30px'} w={'80%'}>
                 <Button onClick={handleSetGroup} fontSize='xs' backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }}>ثبت</Button>
@@ -181,10 +245,10 @@ const Modals = ({ ...props }) => {
       </Modal>
 
       <Modal onClose={props.onCloseMessageSelect} size={'full'} isOpen={props.isOpenMessageSelect}  >
-      <ModalOverlay
-      bg='blackAlpha.100'
-      backdropFilter='blur(5px)'
-    />
+        <ModalOverlay
+          bg='blackAlpha.100'
+          backdropFilter='blur(5px)'
+        />
         <ModalContent>
           <ModalHeader ><Center ></Center></ModalHeader>
           <ModalCloseButton />
@@ -208,16 +272,16 @@ const Modals = ({ ...props }) => {
                         {
                           allMessage.map((item, index) => (
                             <Tr>
-                              <Td>{((messageCurrentPage - 1 )* 6 ) + index + 1}</Td>
+                              <Td>{((messageCurrentPage - 1) * 6) + index + 1}</Td>
                               <Td fontSize='xs'>{item?.content}</Td>
-                              <Td><Checkbox isChecked={messageChecked.includes(item?._id)}  onChange={(e)=>{
-                                if(e.target.checked){
+                              <Td><Checkbox isChecked={messageChecked.includes(item?._id)} onChange={(e) => {
+                                if (e.target.checked) {
                                   setMessageChecked([
-                                    ...messageChecked , item?._id
+                                    ...messageChecked, item?._id
                                   ])
-                                }else {
+                                } else {
                                   setMessageChecked(
-                                    messageChecked.filter((v)=> item?._id !== v)
+                                    messageChecked.filter((v) => item?._id !== v)
                                   )
                                 }
                               }}></Checkbox></Td>
@@ -229,21 +293,21 @@ const Modals = ({ ...props }) => {
                   </TableContainer>
                 </CardBody>
                 <CardFooter>
-                <HStack justifyContent={'space-between'} w={'100%'}>
-                <ResponsivePagination
-                  current={messageCurrentPage}
-                  total={100}
-                  onPageChange={handleMessageCurrentPage}
-                  maxWidth={'100px'}
-                />
-           <Button mt={'2'} fontSize='xs' backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }} onClick={()=>handleAddMessage()} >ثبت</Button>
-          </HStack>
+                  <HStack justifyContent={'space-between'} w={'100%'}>
+                    <ResponsivePagination
+                      current={messageCurrentPage}
+                      total={100}
+                      onPageChange={handleMessageCurrentPage}
+                      maxWidth={'100px'}
+                    />
+                    <Button mt={'2'} fontSize='xs' backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }} onClick={() => handleAddMessage()} >ثبت</Button>
+                  </HStack>
                 </CardFooter>
               </Card>
             </HStack>
           </ModalBody>
           <ModalFooter>
-         
+
           </ModalFooter>
         </ModalContent>
       </Modal>
@@ -278,21 +342,23 @@ const Modals = ({ ...props }) => {
                         {
                           allMessage?.map((item, index) => (
                             <Tr>
-                              <Td>{((currentpage - 1 )* 6 ) + index + 1}</Td>
+                              <Td>{((currentpage - 1) * 6) + index + 1}</Td>
                               <Td>{item.content}</Td>
                               <Td>
-                                  <Select  onChange={(e)=>{setAllMessages(allMessage.map((v)=>(
-                                    item._id === v._id ? {...v , content:v.content , proper:e.target.value} : v
-                                  )))}}>
-                                    {
-                                      properSelectBox.map((item2 , index)=>(
-                                        <option  selected={item2._id === item.proper} value={item2._id}>{item2.proper}</option>
-                                      ))
-                                    }
-                                  </Select>
+                                <Select onChange={(e) => {
+                                  setAllMessages(allMessage.map((v) => (
+                                    item._id === v._id ? { ...v, content: v.content, proper: e.target.value } : v
+                                  )))
+                                }}>
+                                  {
+                                    properSelectBox.map((item2, index) => (
+                                      <option selected={item2._id === item.proper} value={item2._id}>{item2.proper}</option>
+                                    ))
+                                  }
+                                </Select>
                               </Td>
                               <Td>
-                              <IconButton icon={<SiAddthis />} color='gray.600' variant='soft' onClick={onOpen} />
+                                <IconButton icon={<SiAddthis />} color='gray.600' variant='soft' onClick={onOpen} />
                               </Td>
                             </Tr>
                           ))
@@ -302,42 +368,42 @@ const Modals = ({ ...props }) => {
                   </TableContainer>
                 </CardBody>
                 <CardFooter>
-                 <HStack justifyContent={'space-between'} w={'100%'}>
-                <ResponsivePagination
-                  current={currentpage}
-                  total={100}
-                  onPageChange={handleCurrentPage}
-                  maxWidth={'100px'}
-                />
-                 <Button isLoading={isLoading} mt={'2'} fontSize='xs' backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }} onClick={()=>handleSendMessage()}>ثبت</Button>
-                 </HStack>
+                  <HStack justifyContent={'space-between'} w={'100%'}>
+                    <ResponsivePagination
+                      current={currentpage}
+                      total={100}
+                      onPageChange={handleCurrentPage}
+                      maxWidth={'100px'}
+                    />
+                    <Button isLoading={isLoading} mt={'2'} fontSize='xs' backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }} onClick={() => handleSendMessage()}>ثبت</Button>
+                  </HStack>
                 </CardFooter>
               </Card>
             </VStack>
           </ModalBody>
           <ModalFooter>
-            
+
           </ModalFooter>
         </ModalContent>
       </Modal>
 
 
       <Modal isOpen={isOpen} onClose={onClose} size={'xl'}>
-      <ModalOverlay
-      bg='blackAlpha.100'
-      backdropFilter='blur(5px)'
-    />
+        <ModalOverlay
+          bg='blackAlpha.100'
+          backdropFilter='blur(5px)'
+        />
         <ModalContent>
           <ModalHeader></ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <VStack direction={'column'}>
               <HStack justifyContent={'space-between'} >
-                <Input mr={'5'} size={'md'} value={proper} onChange={(e)=>setProper(e.target.value)}/>
-                <label fontSize='xs' style={{width:'150px' , textAlign:'right '}} >پیامک مناسب</label>
+                <Input mr={'5'} size={'md'} value={proper} onChange={(e) => setProper(e.target.value)} />
+                <label fontSize='xs' style={{ width: '150px', textAlign: 'right ' }} >پیامک مناسب</label>
               </HStack>
               <HStack justifyContent={'space-between'} my={'30px'} w='100%'>
-                <Button fontSize='xs' backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }} onClick={()=>handleProper()} >ثبت</Button>
+                <Button fontSize='xs' backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }} onClick={() => handleProper()} >ثبت</Button>
               </HStack>
             </VStack>
           </ModalBody>
@@ -350,12 +416,12 @@ const Modals = ({ ...props }) => {
       {/* new Modals for attacked  */}
 
       <Modal isOpen={isOpenGroupAttacked} onClose={onCloseGroupAttacked} size={'xl'}>
-      <ModalOverlay
-      bg='blackAlpha.100'
-      backdropFilter='blur(5px)'
-    />
+        <ModalOverlay
+          bg='blackAlpha.100'
+          backdropFilter='blur(5px)'
+        />
         <ModalContent>
-          <ModalHeader>Modal Title</ModalHeader>
+          <ModalHeader></ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <VStack direction={'column'}>
@@ -480,10 +546,10 @@ const Modals = ({ ...props }) => {
 
 
       <Modal isOpen={isOpenAddGroupAttacked} onClose={onCloseAddGroupAttacked} size={'xl'}>
-      <ModalOverlay
-      bg='blackAlpha.100'
-      backdropFilter='blur(5px)'
-    />
+        <ModalOverlay
+          bg='blackAlpha.100'
+          backdropFilter='blur(5px)'
+        />
         <ModalContent>
           <ModalHeader></ModalHeader>
           <ModalCloseButton />
@@ -507,22 +573,23 @@ const Modals = ({ ...props }) => {
       {/* new Modals for attacking  */}
 
 
-      <Modal isOpen={isOpenAddGroupAttacking} onClose={onCloseAddGroupAttacking} size={'xl'}>
-      <ModalOverlay
-      bg='blackAlpha.100'
-      backdropFilter='blur(5px)'
-    />
+
+      <Modal isOpen={props.isOpenAddGroupAttacking} onClose={props.onCloseAddGroupAttacking} size={'xl'}>
+        <ModalOverlay
+          bg='blackAlpha.100'
+          backdropFilter='blur(5px)'
+        />
         <ModalContent>
           <ModalHeader></ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <VStack direction={'column'}>
               <HStack justifyContent={'space-between'} mb={6}>
-                <Input mr={'5'} size={'md'} onChange={(v) => setNewGroup(v.target.value)} value={newGroup} />
-                <label style={{fontSize:'12px' , width:'180px' , textAlign:'right'}}>نام گروه عملیات کننده</label>
+                <Input mr={'5'} size={'md'} onChange={(v) => setNameOfAttackingGroup(v.target.value)} value={nameOfAttackingGroup} />
+                <label style={{ fontSize: '12px', width: '180px', textAlign: 'right' }}>نام گروه عملیات کننده</label>
               </HStack>
               <HStack justifyContent={'space-between'} my={'30px'} w={'85%'}>
-                <Button onClick={handleSetGroup} backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }} fontSize={'sm'}>ثبت</Button>
+                <Button onClick={handleSetAttackingGroup} backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }} fontSize={'sm'}>ثبت</Button>
                 <Button onClick={onOpenNumber} backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }} fontSize={'sm'}>شماره سیم کارت گروه عملیات کننده</Button>
               </HStack>
             </VStack>
@@ -531,7 +598,6 @@ const Modals = ({ ...props }) => {
           </ModalFooter>
         </ModalContent>
       </Modal>
-
 
       <Modal onClose={onCloseNumber} size={'full'} isOpen={isOpenNumber}  >
         <ModalOverlay />
@@ -559,10 +625,10 @@ const Modals = ({ ...props }) => {
                       </Thead>
                       <Tbody>
                         {
-                          Array(4).fill().map((item, index) => (
+                          dataOfSimNumber.map((item, index) => (
                             <Tr>
                               <Td>{index + 1}</Td>
-                              <Td>{item}</Td>
+                              <Td>{item.number}</Td>
                               <Td>
                                 <Checkbox ></Checkbox>
                               </Td>
@@ -591,7 +657,7 @@ const Modals = ({ ...props }) => {
           <ModalHeader ></ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <HStack justifyContent={'center'}>
+            <HStack justifyContent={'center'} >
               <Card width={'calc(100% - 80px)'}>
                 <CardHeader backgroundColor={'#4662b2'} color={'white'} textAlign={'center'} borderRadius={'5px'}>
                   <Text>گروه پیامکی</Text>
@@ -602,33 +668,43 @@ const Modals = ({ ...props }) => {
                     <label style={{ width: '100px', textAlign: 'right' }}>شماره</label>
                   </HStack>
                   <HStack justifyContent={'space-between'} mb={5}>
-                    <IconButton icon={<SiAddthis />} color='gray.600' variant='soft' onClick={handleSetSelectMessage} />
-                    <FormControl onClick={onOpen}>
-                      <Select >
-                      </Select>
-                    </FormControl>
-                    <label style={{ width:'calc(100px + 35px)', textAlign: 'right' }}>نام اپراتور</label>
+                    <IconButton icon={<SiAddthis />} color='gray.600' variant='soft' onClick={onOpenOperator} />
+                    <Select >
+                      {
+                        operatorNameList.map((item , index)=>(
+                          <option  value={item?._id}>{item?.name}</option>
+                        ))
+                      }
+                    </Select>
+                    <label style={{ width: 'calc(100px + 35px)', textAlign: 'right' }}>نام اپراتور</label>
                   </HStack>
                   <HStack justifyContent={'space-between'} mb={5}>
-                    <IconButton icon={<SiAddthis />} color='gray.600' variant='soft' onClick={handleSetSelectMessage} />
-                    <FormControl onClick={onOpen}>
-                      <Select >
-                      </Select>
-                    </FormControl>
+                    <IconButton icon={<SiAddthis />} color='gray.600' variant='soft' onClick={onOpenOwner} />
+                    <Select >
+                    {
+                        ownerShipList.map((item , index)=>(
+                          <option  value={item?._id}>{item?.name}</option>
+                        ))
+                      }
+                    </Select>
                     <label style={{ width: 'calc(100px + 35px)', textAlign: 'right' }}>مالکیت</label>
                   </HStack >
                   <HStack justifyContent={'space-between'} mb={5}>
-                    <IconButton icon={<SiAddthis />} color='gray.600' variant='soft' onClick={handleSetSelectMessage} />
-                    <FormControl onClick={onOpen}>
-                      <Select >
-                      </Select>
-                    </FormControl>
+                    <IconButton icon={<SiAddthis />} color='gray.600' variant='soft' onClick={onOpenLocation} />
+                    <Select >
+                    {
+                        locationList.map((item , index)=>(
+                          <option  value={item?._id}>{item?.name}</option>
+                        ))
+                      }
+                    </Select>
                     <label style={{ width: 'calc(100px + 35px)', textAlign: 'right' }}>محل فعالیت</label>
                   </HStack>
+                  <Button mt={'2'} backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }} onClick={handleAddSimNumber}>ثبت</Button>
                 </CardBody>
               </Card>
               <Card width={'calc(100% - 80px)'}>
-              <CardHeader backgroundColor={'#4662b2'} color={'white'} textAlign={'center'} borderRadius={'5px'}>
+                <CardHeader backgroundColor={'#4662b2'} color={'white'} textAlign={'center'} borderRadius={'5px'}>
                   <Text>گروه پیامکی</Text>
                 </CardHeader>
                 <CardBody>
@@ -656,7 +732,7 @@ const Modals = ({ ...props }) => {
                       </Tbody>
                     </Table>
                   </TableContainer>
-                  <Button mt={'2'} backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }}>ثبت</Button>
+                  <Button mt={'2'} backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }} onClick={handleAddSimNumber}>ثبت</Button>
                 </CardBody>
               </Card>
             </HStack>
@@ -668,7 +744,77 @@ const Modals = ({ ...props }) => {
       </Modal>
 
 
+      <Modal isOpen={isOpenOperator} onClose={onCloseOperator} size={'xl'}>
+        <ModalOverlay
+          bg='blackAlpha.100'
+          backdropFilter='blur(5px)'
+        />
+        <ModalContent>
+          <ModalHeader></ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <VStack direction={'column'}>
+              <HStack justifyContent={'space-between'} mb={6}>
+                <Input mr={'5'} size={'md'} onChange={(v) => setOpOwnLocName(v.target.value)} value={opOwnLocName} />
+                <label style={{ fontSize: '12px', width: '180px', textAlign: 'right' }}>اضافه کردن اپراتور</label>
+              </HStack>
+              <HStack justifyContent={'space-between'} my={'30px'} w={'85%'}>
+                <Button onClick={handleInfoAddSim} backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }} fontSize={'sm'}>ثبت</Button>
+              </HStack>
+            </VStack>
+          </ModalBody>
+          <ModalFooter>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
 
+      <Modal isOpen={isOpenLocation} onClose={onCloseLocation} size={'xl'}>
+        <ModalOverlay
+          bg='blackAlpha.100'
+          backdropFilter='blur(5px)'
+        />
+        <ModalContent>
+          <ModalHeader></ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <VStack direction={'column'}>
+              <HStack justifyContent={'space-between'} mb={6}>
+                <Input mr={'5'} size={'md'} onChange={(v) => setOpOwnLocName(v.target.value)} value={opOwnLocName} />
+                <label style={{ fontSize: '12px', width: '180px', textAlign: 'right' }}>اضافه کردن مکان</label>
+              </HStack>
+              <HStack justifyContent={'space-between'} my={'30px'} w={'85%'}>
+                <Button onClick={handleInfoAddSim} backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }} fontSize={'sm'}>ثبت</Button>
+              </HStack>
+            </VStack>
+          </ModalBody>
+          <ModalFooter>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
+      <Modal isOpen={isOpenOwner} onClose={onCloseOwner} size={'xl'}>
+        <ModalOverlay
+          bg='blackAlpha.100'
+          backdropFilter='blur(5px)'
+        />
+        <ModalContent>
+          <ModalHeader></ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <VStack direction={'column'}>
+              <HStack justifyContent={'space-between'} mb={6}>
+                <Input mr={'5'} size={'md'} onChange={(v) => setOpOwnLocName(v.target.value)} value={opOwnLocName} />
+                <label style={{ fontSize: '12px', width: '180px', textAlign: 'right' }}>اضافه کردن مالکیت</label>
+              </HStack>
+              <HStack justifyContent={'space-between'} my={'30px'} w={'85%'}>
+                <Button onClick={handleInfoAddSim} backgroundColor={'#4662b2'} color={'white'} _hover={{ backgroundColor: '#556eb8' }} fontSize={'sm'}>ثبت</Button>
+              </HStack>
+            </VStack>
+          </ModalBody>
+          <ModalFooter>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
 
 
 
